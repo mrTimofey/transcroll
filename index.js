@@ -18,7 +18,6 @@ export const easings = {
  * Animate scrolling.
  * @param {Element|number|string} target target DOM element, scroll position or selector string
  * @param {Element|Window} el container element. Default: window
- * @param {string} axis 'x' or 'y' axis
  * @param {number} duration animation duration in ms. Default: 200
  * @param {function|string} easing easing function or function name
  * @param {number|boolean} jump jump factor or false, used to "jump" to nearer position before starting animation.
@@ -28,7 +27,7 @@ export const easings = {
  * @param {boolean} interrupt immediately stop animation if user uses a mousewheel. Default: true
  * @returns {Promise<{ interrupted: boolean, jumped: boolean }>} promise resolving on animation end
  */
-export default (target, { el = window, axis = 'y', duration = 200, easing = easings.easeInQuad, jump = 0.5, interrupt = true } = {}) => {
+export default (target, { el = window, duration = 200, easing = easings.easeInQuad, jump = 0.5, interrupt = true } = {}) => {
 	function getPosition() {
 		return el === window ? window.pageYOffset : el.scrollTop;
 	}
