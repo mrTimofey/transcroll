@@ -1,17 +1,17 @@
-var easings = {
-	linear: function (t) { return t; },
-	easeInQuad: function (t) { return t * t; },
-	easeOutQuad: function (t) { return t * (2 - t); },
-	easeInOutQuad: function (t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; },
-	easeInCubic: function (t) { return t * t * t; },
-	easeOutCubic: function (t) { return (--t) * t * t + 1; },
-	easeInOutCubic: function (t) { return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1; },
-	easeInQuart: function (t) { return t * t * t * t; },
-	easeOutQuart: function (t) { return 1 - (--t) * t * t * t; },
-	easeInOutQuart: function (t) { return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t; },
-	easeInQuint: function (t) { return t * t * t * t * t; },
-	easeOutQuint: function (t) { return 1 + (--t) * t * t * t * t; },
-	easeInOutQuint: function (t) { return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; }
+const easings = {
+	linear: t => t,
+	easeInQuad: t => t * t,
+	easeOutQuad: t => t * (2 - t),
+	easeInOutQuad: t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
+	easeInCubic: t => t * t * t,
+	easeOutCubic: t => (--t) * t * t + 1,
+	easeInOutCubic: t => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
+	easeInQuart: t => t * t * t * t,
+	easeOutQuart: t => 1 - (--t) * t * t * t,
+	easeInOutQuart: t => t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t,
+	easeInQuint: t => t * t * t * t * t,
+	easeOutQuint: t => 1 + (--t) * t * t * t * t,
+	easeInOutQuint: t => t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 };
 
 /**
@@ -27,32 +27,25 @@ var easings = {
  * @param {boolean} interrupt immediately stop animation if user uses a mousewheel. Default: true
  * @returns {Promise<{ interrupted: boolean, jumped: boolean }>} promise resolving on animation end
  */
-function transcroll(target, ref) {
-	if ( ref === void 0 ) ref = {};
-	var el = ref.el; if ( el === void 0 ) el = window;
-	var duration = ref.duration; if ( duration === void 0 ) duration = 200;
-	var easing = ref.easing; if ( easing === void 0 ) easing = easings.easeInQuad;
-	var jump = ref.jump; if ( jump === void 0 ) jump = 0.5;
-	var interrupt = ref.interrupt; if ( interrupt === void 0 ) interrupt = true;
-
+function transcroll(target, { el = window, duration = 200, easing = easings.easeInQuad, jump = 0.5, interrupt = true } = {}) {
 	function getPosition() {
 		return el === window ? window.pageYOffset : el.scrollTop;
 	}
 	function setPosition(v) {
-		if (el === window) { window.scroll(0, v); }
-		else { el.scrollTop = v; }
+		if (el === window) window.scroll(0, v);
+		else el.scrollTop = v;
 	}
 	function maxPosition() {
-		var element = el === window ? window.document.documentElement : el;
+		const element = el === window ? window.document.documentElement : el;
 		return element.scrollHeight - element.clientHeight;
 	}
 	function select(selector) {
 		return (el === window ? window.document : el).querySelector(selector);
 	}
 	function getPageOffset(element) {
-		if (element === undefined) { element = el; }
-		if (element === window) { return 0; }
-		var top = 0,
+		if (element === undefined) element = el;
+		if (element === window) return 0;
+		let top = 0,
 			_el = element;
 		do {
 			top += _el.offsetTop;
@@ -60,14 +53,14 @@ function transcroll(target, ref) {
 		while(_el = _el.offsetParent);
 		return top;
 	}
-	var targetPosition = Math.min(
+	const targetPosition = Math.min(
 		typeof target === 'number' && target ||
 		typeof target === 'string' && (getPageOffset(select(target)) - getPageOffset()) ||
 		target instanceof Element && (getPageOffset(target) - getPageOffset()),
 		maxPosition()
 	);
 
-	var data = {
+	const data = {
 		interrupted: false,
 		jumped: false
 	};
@@ -77,7 +70,7 @@ function transcroll(target, ref) {
 		return Promise.resolve(data);
 	}
 
-	var startPosition = getPosition(),
+	let startPosition = getPosition(),
 		positionDiff = startPosition - targetPosition,
 		startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
 
@@ -87,23 +80,23 @@ function transcroll(target, ref) {
 		data.jumped = true;
 	}
 
-	if (typeof easing === 'string') { easing = easings[easing]; }
+	if (typeof easing === 'string') easing = easings[easing];
 
-	return new Promise(function (resolve) {
+	return new Promise(resolve => {
 		function stop(e) {
-			if (e) { data.interrupted = true; }
+			if (e) data.interrupted = true;
 			el.removeEventListener('mousewheel', stop);
 			resolve(data);
 		}
-		if (interrupt) { el.addEventListener('mousewheel', stop); }
+		if (interrupt) el.addEventListener('mousewheel', stop);
 		(function scroll() {
-			if (data.interrupted) { return; }
-			var now = 'now' in window.performance ? performance.now() : new Date().getTime(),
+			if (data.interrupted) return;
+			const now = 'now' in window.performance ? performance.now() : new Date().getTime(),
 				time = Math.min(1, ((now - startTime) / duration)),
 				fn = easing(time);
 			setPosition(fn * (targetPosition - startPosition) + startPosition);
-			if (time === 1) { stop(); }
-			else { requestAnimationFrame(scroll); }
+			if (time === 1) stop();
+			else requestAnimationFrame(scroll);
 		})();
 	});
 }

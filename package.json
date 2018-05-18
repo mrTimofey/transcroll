@@ -1,10 +1,16 @@
 {
   "name": "transcroll",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Animate scroll in a modern way",
   "homepage": "https://github.com/mrTimofey/transcroll",
   "repository": "https://github.com/mrTimofey/transcroll.git",
   "main": "index.js",
   "author": "Timofey Tiunov <timoxa17@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "buble src.js > index.js"
+  },
+  "devDependencies": {
+    "buble": "^0.19.3"
+  }
 }
