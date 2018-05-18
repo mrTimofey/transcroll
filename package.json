@@ -2,6 +2,8 @@
   "name": "transcroll",
   "version": "1.0.1",
   "description": "Animate scroll in a modern way",
+  "homepage": "https://github.com/mrTimofey/transcroll",
+  "repository": "https://github.com/mrTimofey/transcroll.git",
   "main": "index.js",
   "author": "Timofey Tiunov <timoxa17@gmail.com>",
   "license": "MIT"
