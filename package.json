@@ -1,0 +1,8 @@
+{
+  "name": "transcroll",
+  "version": "1.0.0",
+  "description": "Animate scroll in a modern way",
+  "main": "index.js",
+  "author": "Timofey Tiunov <timoxa17@gmail.com>",
+  "license": "MIT"
+}
