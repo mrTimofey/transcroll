@@ -14,10 +14,28 @@ const easings = {
 	easeInOutQuint: t => t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 };
 
+const axisProps = {
+	x: {
+		winPageOffset: 'pageXOffset',
+		scrollPos: 'scrollLeft',
+		scrollSize: 'scrollWidth',
+		clientSize: 'clientWidth',
+		offset: 'offsetLeft'
+	},
+	y: {
+		winPageOffset: 'pageYOffset',
+		scrollPos: 'scrollTop',
+		scrollSize: 'scrollHeight',
+		clientSize: 'clientHeight',
+		offset: 'offsetTop'
+	}
+};
+
 /**
  * Animate scrolling.
  * @param {Element|number|string} target target DOM element, scroll position or selector string
  * @param {Element|Window} el container element. Default: window
+ * @param {string} axis 'x' or 'y' axis. Default: 'y'
  * @param {number} duration animation duration in ms. Default: 200
  * @param {function|string} easing easing function or function name
  * @param {number|boolean} jump jump factor or false, used to "jump" to nearer position before starting animation.
@@ -27,17 +45,18 @@ const easings = {
  * @param {boolean} interrupt immediately stop animation if user uses a mousewheel. Default: true
  * @returns {Promise<{ interrupted: boolean, jumped: boolean }>} promise resolving on animation end
  */
-function transcroll(target, { el = window, duration = 200, easing = easings.easeInQuad, jump = 0.5, interrupt = true } = {}) {
+function transcroll(target, { el = window, axis = 'y', duration = 200, easing = easings.easeInQuad, jump = 2, interrupt = true } = {}) {
+	const props = axisProps[axis];
 	function getPosition() {
-		return el === window ? window.pageYOffset : el.scrollTop;
+		return el === window ? window[props.winPageOffset] : el[props.scrollPos];
 	}
 	function setPosition(v) {
-		if (el === window) window.scroll(0, v);
-		else el.scrollTop = v;
+		if (el === window) window.scroll(axis === 'x' ? v : 0, axis === 'y' ? v : 0);
+		else el[props.scrollPos] = v;
 	}
 	function maxPosition() {
 		const element = el === window ? window.document.documentElement : el;
-		return element.scrollHeight - element.clientHeight;
+		return element[props.scrollSize] - element[props.clientSize];
 	}
 	function select(selector) {
 		return (el === window ? window.document : el).querySelector(selector);
@@ -45,13 +64,13 @@ function transcroll(target, { el = window, duration = 200, easing = easings.ease
 	function getPageOffset(element) {
 		if (element === undefined) element = el;
 		if (element === window) return 0;
-		let top = 0,
+		let pos = 0,
 			_el = element;
 		do {
-			top += _el.offsetTop;
+			pos += _el[props.offset];
 		}
 		while(_el = _el.offsetParent);
-		return top;
+		return pos;
 	}
 	const targetPosition = Math.min(
 		typeof target === 'number' && target ||

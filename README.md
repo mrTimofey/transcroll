@@ -1,6 +1,6 @@
 # Transcroll
 
-Animate horizontal scroll in a flexible, user-friendly, simple and modern way.
+Animate scroll in a flexible, user-friendly, simple and modern way.
 
 Install with `npm i transcroll`.
 
@@ -22,6 +22,9 @@ transcroll(200);
 transcroll(whatever, {
 	// scrollable container element
 	el: window,
+	
+	// scrolling axis, 'x' or 'y'
+	axis: 'y',
 
 	// animation duration
 	duration: 200,
@@ -30,11 +33,11 @@ transcroll(whatever, {
 	easing: easings.easeInQuad,
 
 	// jump factor or false to disable (more information below)
-	jump: 0.5,
+	jump: 2,
 
 	// immediately stop animation if user uses a mousewheel
 	interrupt: true
-})
+});
 
 // do something on animation end
 transcroll(whatever).then(({
