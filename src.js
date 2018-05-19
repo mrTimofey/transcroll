@@ -72,12 +72,12 @@ function transcroll(target, { el = window, axis = 'y', duration = 200, easing = 
 		while(_el = _el.offsetParent);
 		return pos;
 	}
-	const targetPosition = Math.min(
+	const targetPosition = Math.max(0, Math.min(
 		typeof target === 'number' && target ||
 		typeof target === 'string' && (getPageOffset(select(target)) - getPageOffset()) ||
 		target instanceof Element && (getPageOffset(target) - getPageOffset()),
 		maxPosition()
-	);
+	));
 
 	const data = {
 		interrupted: false,
