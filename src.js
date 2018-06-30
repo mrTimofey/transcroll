@@ -85,11 +85,13 @@ function transcroll(
 		return pos;
 	}
 	const targetPosition = Math.max(0, Math.min(
-		typeof target === 'number' && target ||
-		typeof target === 'string' && (getPageOffset(select(target)) - getPageOffset()) ||
-		target instanceof Element && (getPageOffset(target) - getPageOffset()),
+		(
+			typeof target === 'number' && target ||
+			typeof target === 'string' && (getPageOffset(select(target)) - getPageOffset()) ||
+			target instanceof Element && (getPageOffset(target) - getPageOffset())
+		) + offset,
 		maxPosition()
-	)) + offset;
+	));
 
 	const data = {
 		interrupted: false,
