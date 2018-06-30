@@ -22,7 +22,10 @@ transcroll(200);
 transcroll(whatever, {
 	// scrollable container element
 	el: window,
-	
+
+	// target position offset
+	offset: 0,
+
 	// scrolling axis, 'x' or 'y'
 	axis: 'y',
 

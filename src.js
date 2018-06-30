@@ -35,6 +35,7 @@ const axisProps = {
  * Animate scrolling.
  * @param {Element|number|string} target target DOM element, scroll position or selector string
  * @param {Element|Window} el container element. Default: window
+ * @param {Number} offset offset target position to this value. Default: 0
  * @param {string} axis 'x' or 'y' axis. Default: 'y'
  * @param {number} duration animation duration in ms. Default: 200
  * @param {function|string} easing easing function or function name
@@ -45,7 +46,18 @@ const axisProps = {
  * @param {boolean} interrupt immediately stop animation if user uses a mousewheel. Default: true
  * @returns {Promise<{ interrupted: boolean, jumped: boolean }>} promise resolving on animation end
  */
-function transcroll(target, { el = window, axis = 'y', duration = 200, easing = easings.easeInQuad, jump = 2, interrupt = true } = {}) {
+function transcroll(
+	target,
+	{
+		el = window,
+		offset = 0,
+		axis = 'y',
+		duration = 200,
+		easing = easings.easeInQuad,
+		jump = 2,
+		interrupt = true
+	} = {}
+) {
 	const props = axisProps[axis];
 	function getPosition() {
 		return el === window ? window[props.winPageOffset] : el[props.scrollPos];
@@ -77,7 +89,7 @@ function transcroll(target, { el = window, axis = 'y', duration = 200, easing = 
 		typeof target === 'string' && (getPageOffset(select(target)) - getPageOffset()) ||
 		target instanceof Element && (getPageOffset(target) - getPageOffset()),
 		maxPosition()
-	));
+	)) + offset;
 
 	const data = {
 		interrupted: false,
