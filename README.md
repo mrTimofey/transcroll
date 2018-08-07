@@ -49,6 +49,12 @@ transcroll(whatever).then(({
 	// animation was interrupted by user
 	interrupted
 }) => doSomething());
+
+// same with async/await
+const asyncTranscroll = async () => {
+	const { jumped, interrupted } = await transcroll(whatever);
+	doSomething();
+}
 ```
 
 ## Jump factor
