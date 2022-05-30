@@ -7,7 +7,7 @@ Install with `npm i transcroll`.
 Usage:
 
 ```javascript
-import transcroll, { easings } from './index';
+import transcroll, { easings } from 'transcroll';
 
 // animate to an element
 transcroll(document.querySelector('#whatever'));
